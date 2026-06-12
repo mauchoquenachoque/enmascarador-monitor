@@ -1,10 +1,10 @@
-from datetime import timedelta
-from typing import Optional
+from typing import Any
 
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
 from app.core.exceptions import AuthenticationError
+from app.core.logging import get_logger
 from app.core.security import (
     create_access_token,
     create_refresh_token,
@@ -17,7 +17,6 @@ from app.core.security import (
 )
 from app.models.user import User
 from app.schemas.auth import TokenResponse, UserCreate
-from app.core.logging import get_logger
 
 logger = get_logger("auth_service")
 settings = get_settings()
@@ -97,5 +96,5 @@ class AuthService:
         revoke_refresh_token(refresh_token)
         logger.info("user_logged_out")
 
-    def get_user_by_username(self, username: str) -> Optional[User]:
+    def get_user_by_username(self, username: str) -> User | None:
         return self.db.query(User).filter(User.username == username).first()

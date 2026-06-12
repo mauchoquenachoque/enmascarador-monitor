@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Union
+from typing import Any
 
 
 class BaseDatabase(ABC):
@@ -16,7 +16,7 @@ class BaseDatabase(ABC):
 
     @abstractmethod
     def execute_query(
-        self, query: Union[str, dict[str, Any]], **kwargs: Any
+        self, query: str | dict[str, Any], **kwargs: Any
     ) -> list[dict[str, Any]]:
         pass
 

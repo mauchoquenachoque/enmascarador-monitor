@@ -1,5 +1,3 @@
-from typing import Optional
-
 from sqlalchemy.orm import Session
 
 from app.models.query_history import QueryHistory
@@ -15,7 +13,7 @@ class QueryHistoryRepository:
         self.db.refresh(record)
         return record
 
-    def get_by_id(self, record_id: str) -> Optional[QueryHistory]:
+    def get_by_id(self, record_id: str) -> QueryHistory | None:
         return self.db.query(QueryHistory).filter(QueryHistory.id == record_id).first()
 
     def get_by_user(

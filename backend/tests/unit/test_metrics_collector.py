@@ -1,4 +1,4 @@
-from app.metrics.collector import MetricsCollector, MeasurementResult
+from app.metrics.collector import MeasurementResult, MetricsCollector
 
 
 class TestMetricsCollector:
@@ -44,6 +44,7 @@ class TestMetricsCollector:
 
         def slow_mask(data):
             import time
+
             time.sleep(0.001)
             return data
 

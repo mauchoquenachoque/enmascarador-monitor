@@ -1,6 +1,7 @@
 import time
-from dataclasses import dataclass, field
-from typing import Any, Callable
+from collections.abc import Callable
+from dataclasses import dataclass
+from typing import Any
 
 import psutil
 
@@ -76,7 +77,7 @@ class MetricsCollector:
 
         if masking_func and raw_data:
             start_mask = time.perf_counter_ns()
-            masked_data = masking_func(raw_data)
+            masking_func(raw_data)
             end_mask = time.perf_counter_ns()
 
             result.masking_latency_ns = end_mask - start_mask

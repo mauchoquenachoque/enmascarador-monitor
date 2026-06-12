@@ -1,12 +1,12 @@
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
 
 class QueryRunRequest(BaseModel):
     connection_id: str
-    query: Optional[str] = None
-    table: Optional[str] = None
+    query: str | None = None
+    table: str | None = None
     masking_rules: dict[str, str] = Field(default_factory=dict)
     limit: int = Field(default=100, ge=1, le=10000)
 
@@ -27,7 +27,7 @@ class QueryHistoryResponse(BaseModel):
     connection_id: str
     engine: str
     query: str
-    masking_algorithm: Optional[str]
+    masking_algorithm: str | None
     rows_returned: int
     db_latency_ms: float
     masking_latency_ms: float

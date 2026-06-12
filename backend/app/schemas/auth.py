@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Optional
 
 from pydantic import BaseModel, EmailStr, Field
 
@@ -12,9 +11,9 @@ class UserCreate(BaseModel):
 
 
 class UserUpdate(BaseModel):
-    email: Optional[EmailStr] = None
-    role: Optional[str] = Field(default=None, pattern="^(admin|analyst|viewer)$")
-    is_active: Optional[bool] = None
+    email: EmailStr | None = None
+    role: str | None = Field(default=None, pattern="^(admin|analyst|viewer)$")
+    is_active: bool | None = None
 
 
 class UserResponse(BaseModel):

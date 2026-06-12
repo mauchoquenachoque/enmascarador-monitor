@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.auth.dependencies import get_current_user, require_admin
@@ -62,5 +62,7 @@ def get_me(
     service = AuthService(db)
     user = service.get_user_by_username(current_user["username"])
     if not user:
-        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+        from app.core.exceptions import NotFoundError
+
+        raise NotFoundError("Usuario")
     return UserResponse.model_validate(user)

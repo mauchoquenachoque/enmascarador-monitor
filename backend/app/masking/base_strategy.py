@@ -23,7 +23,7 @@ class MaskingStrategy(ABC):
         masked = []
         for row in data:
             new_row = row.copy()
-            for column, algorithm in rules.items():
+            for column, _algorithm in rules.items():
                 if column in new_row and isinstance(new_row[column], str):
                     new_row[column] = self.mask(new_row[column])
             masked.append(new_row)

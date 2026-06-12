@@ -6,9 +6,8 @@ from app.auth.dependencies import require_viewer
 from app.core.dependencies import get_db
 from app.metrics.collector import collector
 from app.models.benchmark_result import BenchmarkResult
-from app.models.query_history import QueryHistory
 from app.models.connection import Connection
-from app.models.user import User
+from app.models.query_history import QueryHistory
 from app.schemas.dashboard import DashboardStats
 
 router = APIRouter(prefix="/dashboard", tags=["Dashboard"])

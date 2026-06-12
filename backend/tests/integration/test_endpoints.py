@@ -1,6 +1,3 @@
-import pytest
-
-
 class TestHealthEndpoints:
     def test_health(self, client):
         res = client.get("/health")
@@ -15,9 +12,9 @@ class TestHealthEndpoints:
 
 class TestAuthEndpoints:
     def test_login_success(self, client):
+        from app.core.dependencies import SessionLocal
         from app.core.security import hash_password
         from app.models.user import User
-        from app.core.dependencies import SessionLocal
 
         db = SessionLocal()
         admin = User(
@@ -87,9 +84,9 @@ class TestAuthEndpoints:
         assert res.json()["username"] == "newuser2"
 
     def test_refresh_token(self, client):
+        from app.core.dependencies import SessionLocal
         from app.core.security import hash_password
         from app.models.user import User
-        from app.core.dependencies import SessionLocal
 
         db = SessionLocal()
         user = User(

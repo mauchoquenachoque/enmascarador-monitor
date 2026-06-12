@@ -24,7 +24,7 @@ class TestDatabaseFactory:
         engine = DatabaseFactory.create("sqlite", {"database": ":memory:"})
         assert engine is not None
 
-    def test_factory_is_singleton_pattern(self):
+    def test_factory_creates_same_type(self):
         e1 = DatabaseFactory.create("sqlite", {"database": ":memory:"})
         e2 = DatabaseFactory.create("sqlite", {"database": ":memory:"})
-        assert type(e1) == type(e2)
+        assert type(e1) is type(e2)

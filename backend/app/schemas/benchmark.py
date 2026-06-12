@@ -1,5 +1,3 @@
-from typing import Any, Optional
-
 from pydantic import BaseModel, Field
 
 
@@ -10,7 +8,7 @@ class BenchmarkRequest(BaseModel):
         default=["redaccion", "hashing", "encriptacion", "fpe"],
     )
     iterations: int = Field(default=10, ge=1, le=1000)
-    query: Optional[str] = None
+    query: str | None = None
 
 
 class BenchmarkResultItem(BaseModel):

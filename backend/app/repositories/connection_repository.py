@@ -1,5 +1,3 @@
-from typing import Optional
-
 from sqlalchemy.orm import Session
 
 from app.models.connection import Connection
@@ -15,7 +13,7 @@ class ConnectionRepository:
         self.db.refresh(conn)
         return conn
 
-    def get_by_id(self, conn_id: str) -> Optional[Connection]:
+    def get_by_id(self, conn_id: str) -> Connection | None:
         return self.db.query(Connection).filter(Connection.id == conn_id).first()
 
     def get_all(self, skip: int = 0, limit: int = 100) -> list[Connection]:

@@ -1,4 +1,5 @@
 import os
+from contextlib import suppress
 
 from cryptography.fernet import Fernet
 
@@ -14,10 +15,8 @@ def _load_or_generate_key() -> bytes:
     key = Fernet.generate_key()
     with open(KEYFILE_PATH, "wb") as f:
         f.write(key)
-    try:
+    with suppress(AttributeError, OSError):
         os.chmod(KEYFILE_PATH, 0o600)
-    except (AttributeError, OSError):
-        pass
     return key
 
 

@@ -1,16 +1,13 @@
 import csv
 import io
-import json
 from typing import Any
 
 from fastapi import APIRouter, Depends, Query
 from fastapi.responses import StreamingResponse
-from sqlalchemy.orm import Session
 
-from app.auth.dependencies import require_viewer, require_analyst
-from app.core.dependencies import get_db
+from app.auth.dependencies import require_viewer
 from app.metrics.collector import collector
-from app.schemas.metric import LiveMetrics, MetricSummary
+from app.schemas.metric import LiveMetrics
 
 router = APIRouter(prefix="/metrics", tags=["Métricas"])
 
@@ -52,12 +49,12 @@ def get_metrics_summary(
 
 @router.get("/export")
 def export_metrics(
-    format: str = Query(default="json", regex="^(json|csv)$"),
+    fmt: str = Query(default="json", pattern="^(json|csv)$"),
     _: dict = Depends(require_viewer),
 ) -> Any:
     history = collector.get_history()
 
-    if format == "csv":
+    if fmt == "csv":
         if not history:
             return StreamingResponse(
                 io.StringIO("No data"),

@@ -1,12 +1,12 @@
 from app.core.security import (
-    hash_password,
-    verify_password,
     create_access_token,
     create_refresh_token,
     decode_token,
-    store_refresh_token,
+    hash_password,
     is_refresh_token_valid,
     revoke_refresh_token,
+    store_refresh_token,
+    verify_password,
 )
 
 
@@ -55,6 +55,7 @@ class TestJWTTokens:
 
     def test_expired_token(self):
         from datetime import timedelta
+
         token = create_access_token("user", "viewer", expires_delta=timedelta(seconds=-1))
         assert decode_token(token) is None
 

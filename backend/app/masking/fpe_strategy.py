@@ -23,19 +23,19 @@ class FPEStrategy(MaskingStrategy):
         shuffled_digits = digits.copy()
         random.seed(42)
         random.shuffle(shuffled_digits)
-        mapping = dict(zip(digits, shuffled_digits))
+        mapping = dict(zip(digits, shuffled_digits, strict=False))
 
         lower = list(string.ascii_lowercase)
         shuffled_lower = lower.copy()
         random.seed(42)
         random.shuffle(shuffled_lower)
-        mapping.update(zip(lower, shuffled_lower))
+        mapping.update(zip(lower, shuffled_lower, strict=False))
 
         upper = list(string.ascii_uppercase)
         shuffled_upper = upper.copy()
         random.seed(42)
         random.shuffle(shuffled_upper)
-        mapping.update(zip(upper, shuffled_upper))
+        mapping.update(zip(upper, shuffled_upper, strict=False))
 
         return mapping
 

@@ -2,11 +2,9 @@ from typing import Any
 
 from fastapi import APIRouter, Depends
 
-from app.auth.dependencies import get_current_user, require_analyst
+from app.auth.dependencies import require_analyst
 from app.database.factory import DatabaseFactory
 from app.schemas.database import (
-    ConnectionCreate,
-    ConnectionResponse,
     ConnectionTestRequest,
     ConnectionTestResponse,
     SchemaResponse,
@@ -53,7 +51,7 @@ def test_connection(
     except Exception as e:
         return ConnectionTestResponse(
             success=False,
-            message=f"Error: {str(e)}",
+            message=f"Error: {e!s}",
         )
 
 

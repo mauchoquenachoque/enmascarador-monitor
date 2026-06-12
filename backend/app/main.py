@@ -1,17 +1,16 @@
 import os
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator
 
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.api.v1.router import api_router
 from app.core.config import get_settings
-from app.core.logging import setup_logging, get_logger
+from app.core.dependencies import engine
+from app.core.logging import get_logger, setup_logging
 from app.core.middleware import setup_middleware
 from app.models.base import Base
-from app.core.dependencies import engine
 
 settings = get_settings()
 logger = get_logger("app")
@@ -34,8 +33,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
 def _seed_admin_user() -> None:
     from app.core.dependencies import SessionLocal
-    from app.models.user import User
     from app.core.security import hash_password
+    from app.models.user import User
 
     db = SessionLocal()
     try:

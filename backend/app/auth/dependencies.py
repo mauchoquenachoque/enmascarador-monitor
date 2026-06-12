@@ -1,10 +1,8 @@
-from typing import Optional
-
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from app.core.security import decode_token
 from app.core.logging import get_logger
+from app.core.security import decode_token
 
 logger = get_logger("auth")
 security_scheme = HTTPBearer()

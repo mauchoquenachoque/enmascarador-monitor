@@ -10,8 +10,8 @@ from app.database.factory import DatabaseFactory
 from app.masking.factory import MaskingFactory
 from app.metrics.benchmark import BenchmarkEngine
 from app.metrics.collector import collector
-from app.repositories.benchmark_repository import BenchmarkRepository
 from app.models.benchmark_result import BenchmarkResult
+from app.repositories.benchmark_repository import BenchmarkRepository
 from app.repositories.connection_repository import ConnectionRepository
 from app.schemas.benchmark import BenchmarkRequest, BenchmarkResponse
 
@@ -28,6 +28,7 @@ def run_benchmark(
     conn = conn_repo.get_by_id(data.connection_id)
     if not conn:
         from app.core.exceptions import NotFoundError
+
         raise NotFoundError("Conexión")
 
     engine = DatabaseFactory.create(conn.engine, conn.credentials)

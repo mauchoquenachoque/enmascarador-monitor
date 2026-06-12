@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -29,7 +29,7 @@ class ConnectionTestRequest(BaseModel):
 class ConnectionTestResponse(BaseModel):
     success: bool
     message: str
-    schema: Optional[dict[str, Any]] = None
+    schema: dict[str, Any] | None = None
 
 
 class SchemaResponse(BaseModel):

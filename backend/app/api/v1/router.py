@@ -2,12 +2,12 @@ from fastapi import APIRouter
 
 from app.api.v1.endpoints import (
     auth,
-    databases,
-    queries,
-    masking,
-    metrics,
     benchmarks,
     dashboard,
+    databases,
+    masking,
+    metrics,
+    queries,
 )
 
 api_router = APIRouter()

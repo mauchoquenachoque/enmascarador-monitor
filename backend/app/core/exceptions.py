@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any
 
 from fastapi import HTTPException, status
 
@@ -8,8 +8,9 @@ class AppException(HTTPException):
         self,
         status_code: int = status.HTTP_500_INTERNAL_SERVER_ERROR,
         detail: str = "Error interno del servidor",
-        headers: Optional[dict[str, Any]] = None,
-    ) -> super().__init__(status_code=status_code, detail=detail, headers=headers)
+        headers: dict[str, Any] | None = None,
+    ) -> None:
+        super().__init__(status_code=status_code, detail=detail, headers=headers)
 
 
 class AuthenticationError(AppException):

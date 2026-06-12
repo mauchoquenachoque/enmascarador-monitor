@@ -10,7 +10,7 @@ from app.masking.factory import MaskingFactory
 from app.metrics.collector import collector
 from app.models.query_history import QueryHistory
 from app.repositories.user_repository import UserRepository
-from app.schemas.query import QueryHistoryResponse, QueryRunRequest, QueryRunResponse
+from app.schemas.query import QueryRunRequest, QueryRunResponse
 
 router = APIRouter(prefix="/queries", tags=["Consultas"])
 

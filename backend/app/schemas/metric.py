@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -11,8 +11,8 @@ class MetricPoint(BaseModel):
 
 class MetricSummary(BaseModel):
     metric_type: str
-    engine: Optional[str] = None
-    algorithm: Optional[str] = None
+    engine: str | None = None
+    algorithm: str | None = None
     count: int
     avg: float
     min_val: float

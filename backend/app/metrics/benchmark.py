@@ -1,9 +1,9 @@
 import statistics
-import time
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from app.core.logging import get_logger
-from app.metrics.collector import MetricsCollector, MeasurementResult
+from app.metrics.collector import MetricsCollector
 
 logger = get_logger("benchmark")
 
@@ -20,7 +20,7 @@ class BenchmarkEngine:
         algorithm: str,
         iterations: int = 10,
     ) -> dict[str, Any]:
-        results: list[MeasurementResult] = []
+        results = []
 
         logger.info(
             "benchmark_started",
@@ -29,7 +29,7 @@ class BenchmarkEngine:
             iterations=iterations,
         )
 
-        for i in range(iterations):
+        for _i in range(iterations):
             result = self.collector.measure_query(
                 db_func=db_func,
                 masking_func=masking_func,
