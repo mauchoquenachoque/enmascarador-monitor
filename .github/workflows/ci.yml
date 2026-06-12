@@ -20,8 +20,8 @@ jobs:
           pip install -r requirements-dev.txt
       - name: Ruff Lint
         run: cd backend && ruff check app/ tests/
-      - name: Black Format Check
-        run: cd backend && black --check app/ tests/
+      - name: Ruff Format Check
+        run: cd backend && ruff format --check app/ tests/
       - name: Mypy Type Check
         run: cd backend && mypy app/ --ignore-missing-imports
       - name: Bandit Security Scan
