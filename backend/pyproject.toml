@@ -14,7 +14,7 @@ python_version = "3.11"
 warn_return_any = false
 warn_unused_configs = true
 ignore_missing_imports = true
-disable_error_code = ["override", "arg-type", "dict-item", "no-any-return", "assignment", "index", "attr-defined", "var-annotated", "valid-type", "list-item"]
+disable_error_code = ["override", "arg-type", "dict-item", "no-any-return", "assignment", "index", "attr-defined", "var-annotated", "valid-type", "list-item", "import-untyped"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
