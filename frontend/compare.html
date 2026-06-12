@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparador - Multi-DB Masking Monitor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script>tailwindcss.config = { darkMode: 'class' }</script>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'); body { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-gray-950 text-white min-h-screen">
+    <nav class="bg-gray-900 border-b border-gray-800 px-6 py-3">
+        <div class="flex items-center justify-between max-w-7xl mx-auto">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                </div>
+                <span class="font-bold text-lg">Masking Monitor</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="/static/dashboard.html" class="text-gray-400 hover:text-white text-sm font-medium">Dashboard</a>
+                <a href="/static/compare.html" class="text-blue-400 hover:text-blue-300 text-sm font-medium">Comparador</a>
+                <a href="/static/benchmark.html" class="text-gray-400 hover:text-white text-sm font-medium">Benchmark</a>
+                <a href="/static/reports.html" class="text-gray-400 hover:text-white text-sm font-medium">Reportes</a>
+                <button id="btn-logout" class="text-red-400 hover:text-red-300 text-sm">Salir</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-6">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold">Comparador de Algoritmos</h1>
+            <p class="text-gray-400 mt-1">Compara el rendimiento de diferentes algoritmos de enmascaramiento</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div class="bg-gray-900 rounded-xl p-4 border border-gray-800">
+                <label class="block text-sm font-medium text-gray-300 mb-2">Datos de prueba</label>
+                <textarea id="input-data" rows="4" class="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-sm text-white font-mono" placeholder='[{"nombre": "Juan Perez", "email": "juan@test.com", "ssn": "123-45-6789"}]'></textarea>
+            </div>
+            <div class="bg-gray-900 rounded-xl p-4 border border-gray-800">
+                <label class="block text-sm font-medium text-gray-300 mb-2">Reglas de enmascaramiento</label>
+                <div id="rules-container" class="space-y-2">
+                    <div class="flex gap-2">
+                        <input type="text" placeholder="columna" class="rule-col flex-1 bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm text-white">
+                        <select class="rule-alg bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm text-white">
+                            <option value="redaccion">Redacción</option>
+                            <option value="hashing">SHA-256</option>
+                            <option value="encriptacion">AES/Fernet</option>
+                            <option value="fpe">FPE</option>
+                        </select>
+                    </div>
+                </div>
+                <button id="btn-add-rule" class="mt-2 text-blue-400 hover:text-blue-300 text-sm">+ Agregar regla</button>
+            </div>
+            <div class="bg-gray-900 rounded-xl p-4 border border-gray-800 flex flex-col justify-end">
+                <button id="btn-compare" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition">
+                    Comparar Algoritmos
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-gray-900 rounded-xl p-6 border border-gray-800">
+                <h3 class="text-lg font-semibold mb-4">Comparación de Latencia</h3>
+                <canvas id="chart-compare-latency" height="250"></canvas>
+            </div>
+            <div class="bg-gray-900 rounded-xl p-6 border border-gray-800">
+                <h3 class="text-lg font-semibold mb-4">Comparación de CPU / RAM</h3>
+                <canvas id="chart-compare-resources" height="250"></canvas>
+            </div>
+        </div>
+
+        <div class="bg-gray-900 rounded-xl p-6 border border-gray-800">
+            <h3 class="text-lg font-semibold mb-4">Resultados Comparativos</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-gray-800">
+                            <th class="text-left py-3 px-4 text-gray-400 font-medium">Algoritmo</th>
+                            <th class="text-left py-3 px-4 text-gray-400 font-medium">Latencia Masking (ms)</th>
+                            <th class="text-left py-3 px-4 text-gray-400 font-medium">CPU %</th>
+                            <th class="text-left py-3 px-4 text-gray-400 font-medium">RAM MB</th>
+                            <th class="text-left py-3 px-4 text-gray-400 font-medium">Reversible</th>
+                            <th class="text-left py-3 px-4 text-gray-400 font-medium">Rendimiento</th>
+                        </tr>
+                    </thead>
+                    <tbody id="compare-table-body">
+                        <tr><td colspan="6" class="py-8 text-center text-gray-500">Ejecuta una comparación para ver resultados</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/charts.js"></script>
+    <script src="/static/js/compare.js"></script>
+</body>
+</html>

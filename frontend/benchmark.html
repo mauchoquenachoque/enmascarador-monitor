@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benchmark - Multi-DB Masking Monitor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script>tailwindcss.config = { darkMode: 'class' }</script>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'); body { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-gray-950 text-white min-h-screen">
+    <nav class="bg-gray-900 border-b border-gray-800 px-6 py-3">
+        <div class="flex items-center justify-between max-w-7xl mx-auto">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                </div>
+                <span class="font-bold text-lg">Masking Monitor</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="/static/dashboard.html" class="text-gray-400 hover:text-white text-sm font-medium">Dashboard</a>
+                <a href="/static/compare.html" class="text-gray-400 hover:text-white text-sm font-medium">Comparador</a>
+                <a href="/static/benchmark.html" class="text-blue-400 hover:text-blue-300 text-sm font-medium">Benchmark</a>
+                <a href="/static/reports.html" class="text-gray-400 hover:text-white text-sm font-medium">Reportes</a>
+                <button id="btn-logout" class="text-red-400 hover:text-red-300 text-sm">Salir</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-6">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold">Benchmark Engine</h1>
+            <p class="text-gray-400 mt-1">Ejecuta pruebas repetidas para obtener métricas estadísticas confiables</p>
+        </div>
+
+        <div class="bg-gray-900 rounded-xl p-6 border border-gray-800 mb-8">
+            <h3 class="text-lg font-semibold mb-4">Configuración del Benchmark</h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Motor de BD</label>
+                    <select id="bench-engine" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+                        <option value="sqlite">SQLite</option>
+                        <option value="postgres">PostgreSQL</option>
+                        <option value="mysql">MySQL</option>
+                        <option value="mongodb">MongoDB</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Tabla / Colección</label>
+                    <input type="text" id="bench-table" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" placeholder="nombre_tabla">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Iteraciones</label>
+                    <input type="number" id="bench-iters" value="10" min="1" max="100" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+                </div>
+                <div class="flex items-end">
+                    <button id="btn-run-bench" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition">
+                        Ejecutar Benchmark
+                    </button>
+                </div>
+            </div>
+            <div class="mt-4">
+                <label class="block text-sm font-medium text-gray-300 mb-2">Algoritmos a evaluar</label>
+                <div class="flex gap-4 flex-wrap">
+                    <label class="flex items-center gap-2"><input type="checkbox" checked value="redaccion" class="bench-alg rounded bg-gray-800 border-gray-700"> Redacción</label>
+                    <label class="flex items-center gap-2"><input type="checkbox" checked value="hashing" class="bench-alg rounded bg-gray-800 border-gray-700"> SHA-256</label>
+                    <label class="flex items-center gap-2"><input type="checkbox" checked value="encriptacion" class="bench-alg rounded bg-gray-800 border-gray-700"> AES/Fernet</label>
+                    <label class="flex items-center gap-2"><input type="checkbox" checked value="fpe" class="bench-alg rounded bg-gray-800 border-gray-700"> FPE</label>
+                </div>
+            </div>
+        </div>
+
+        <div id="bench-progress" class="hidden mb-8">
+            <div class="bg-gray-900 rounded-xl p-6 border border-gray-800">
+                <div class="flex items-center gap-3 mb-4">
+                    <svg class="animate-spin w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                    <span class="font-medium">Ejecutando benchmark...</span>
+                </div>
+                <div class="w-full bg-gray-800 rounded-full h-2">
+                    <div id="progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="bench-results" class="hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="bg-gray-900 rounded-xl p-6 border border-gray-800">
+                    <h3 class="text-lg font-semibold mb-4">Latencia por Algoritmo (Benchmark)</h3>
+                    <canvas id="chart-bench-latency" height="250"></canvas>
+                </div>
+                <div class="bg-gray-900 rounded-xl p-6 border border-gray-800">
+                    <h3 class="text-lg font-semibold mb-4">Percentiles (P50, P95, P99)</h3>
+                    <canvas id="chart-bench-percentiles" height="250"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-gray-900 rounded-xl p-6 border border-gray-800">
+                <h3 class="text-lg font-semibold mb-4">Resultados Detallados</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-gray-800">
+                                <th class="text-left py-3 px-4 text-gray-400 font-medium">Algoritmo</th>
+                                <th class="text-left py-3 px-4 text-gray-400 font-medium">Avg DB (ms)</th>
+                                <th class="text-left py-3 px-4 text-gray-400 font-medium">Avg Mask (ms)</th>
+                                <th class="text-left py-3 px-4 text-gray-400 font-medium">Avg Total (ms)</th>
+                                <th class="text-left py-3 px-4 text-gray-400 font-medium">Overhead %</th>
+                                <th class="text-left py-3 px-4 text-gray-400 font-medium">P50 (ms)</th>
+                                <th class="text-left py-3 px-4 text-gray-400 font-medium">P95 (ms)</th>
+                                <th class="text-left py-3 px-4 text-gray-400 font-medium">P99 (ms)</th>
+                                <th class="text-left py-3 px-4 text-gray-400 font-medium">QPS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bench-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/charts.js"></script>
+    <script src="/static/js/benchmark.js"></script>
+</body>
+</html>
