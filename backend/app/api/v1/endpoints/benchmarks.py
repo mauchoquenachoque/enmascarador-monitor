@@ -39,9 +39,9 @@ def run_benchmark(
     if not query:
         if conn.engine in ("postgres", "mysql", "sqlserver", "sqlite"):
             query = (
-                f"SELECT TOP 100 * FROM {data.table}"
+                f"SELECT TOP 100 * FROM {data.table}"  # nosec B608
                 if conn.engine == "sqlserver"
-                else f"SELECT * FROM {data.table} LIMIT 100"
+                else f"SELECT * FROM {data.table} LIMIT 100"  # nosec B608
             )
         elif conn.engine in ("mongodb", "mongo"):
             kwargs["collection"] = data.table

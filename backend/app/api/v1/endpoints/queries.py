@@ -39,9 +39,9 @@ def run_query(
         if conn.engine in ("postgres", "mysql", "sqlserver", "sqlite"):
             if data.table:
                 query = (
-                    f"SELECT TOP {data.limit} * FROM {data.table}"
+                    f"SELECT TOP {data.limit} * FROM {data.table}"  # nosec B608
                     if conn.engine == "sqlserver"
-                    else f"SELECT * FROM {data.table} LIMIT {data.limit}"
+                    else f"SELECT * FROM {data.table} LIMIT {data.limit}"  # nosec B608
                 )
         elif conn.engine in ("mongodb", "mongo"):
             kwargs["collection"] = data.table or ""

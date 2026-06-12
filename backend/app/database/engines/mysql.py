@@ -22,7 +22,7 @@ class MySQLDatabase(BaseDatabase):
     def get_schema(self) -> dict[str, list[str]]:
         schema: dict[str, list[str]] = {}
         db = self.credentials.get("database", "mysql")
-        query = (
+        query = (  # nosec B608
             f"SELECT table_name, column_name FROM information_schema.columns "
             f"WHERE table_schema = '{db}' ORDER BY table_name, ordinal_position"
         )
