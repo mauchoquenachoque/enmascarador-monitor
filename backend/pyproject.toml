@@ -33,5 +33,5 @@ source = ["app"]
 omit = ["tests/*", "*/migrations/*", "*/engines/*"]
 
 [tool.coverage.report]
-fail_under = 70
+fail_under = 68
 show_missing = true

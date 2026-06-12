@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from app.core.dependencies import get_db
-from app.main import app
+from app.main import application as fastapi_app
 from app.models.base import Base
 
 import app.database.engines.sqlite  # noqa: F401 - register sqlite engine
@@ -49,10 +49,10 @@ def db_session():
 
 @pytest.fixture(scope="function")
 def client(db_session):
-    app.dependency_overrides[get_db] = override_get_db
-    with TestClient(app) as c:
+    fastapi_app.dependency_overrides[get_db] = override_get_db
+    with TestClient(fastapi_app) as c:
         yield c
-    app.dependency_overrides.clear()
+    fastapi_app.dependency_overrides.clear()
 
 
 @pytest.fixture
