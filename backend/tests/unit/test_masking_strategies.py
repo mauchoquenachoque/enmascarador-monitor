@@ -1,8 +1,8 @@
+from app.masking.aes_strategy import AESStrategy
 from app.masking.factory import MaskingFactory
 from app.masking.fpe_strategy import FPEStrategy, FPESimulationStrategy
 from app.masking.redaction_strategy import RedactionStrategy
 from app.masking.sha256_strategy import SHA256Strategy
-from app.masking.aes_strategy import AESStrategy
 
 
 class TestRedactionStrategy:

@@ -1,4 +1,4 @@
-import uuid
+import uuid  # noqa: I001
 
 from sqlalchemy import Column, JSON, String
 
