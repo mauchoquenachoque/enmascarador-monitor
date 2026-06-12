@@ -3,7 +3,6 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
 
 from app.api.v1.router import api_router
 from app.core.config import get_settings
@@ -91,7 +90,18 @@ def create_app() -> FastAPI:
         os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "frontend"
     )
     if os.path.isdir(static_dir):
-        app.mount("/static", StaticFiles(directory=static_dir), name="static")
+        from starlette.staticfiles import StaticFiles as StarletteStaticFiles
+
+        class NoCacheStaticFiles(StarletteStaticFiles):
+            async def get_response(self, path, scope):
+                response = await super().get_response(path, scope)
+                if path.endswith(".html"):
+                    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+                    response.headers["Pragma"] = "no-cache"
+                    response.headers["Expires"] = "0"
+                return response
+
+        app.mount("/static", NoCacheStaticFiles(directory=static_dir), name="static")
 
     return app
 
