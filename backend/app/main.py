@@ -81,7 +81,7 @@ def create_app() -> FastAPI:
     def readiness_check() -> dict:
         return {"status": "ready"}
 
-    static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")
+    static_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "frontend")
     if os.path.isdir(static_dir):
         app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
