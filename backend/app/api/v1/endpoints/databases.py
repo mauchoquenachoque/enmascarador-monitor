@@ -42,7 +42,7 @@ def test_connection(
             return ConnectionTestResponse(
                 success=True,
                 message=f"Conexión exitosa a {data.engine}",
-                schema=schema,
+                db_schema=schema,
             )
         return ConnectionTestResponse(
             success=False,

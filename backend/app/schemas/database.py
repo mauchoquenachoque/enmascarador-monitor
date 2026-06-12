@@ -29,7 +29,7 @@ class ConnectionTestRequest(BaseModel):
 class ConnectionTestResponse(BaseModel):
     success: bool
     message: str
-    schema: dict[str, Any] | None = None
+    db_schema: dict[str, Any] | None = None
 
 
 class SchemaResponse(BaseModel):

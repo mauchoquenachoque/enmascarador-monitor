@@ -81,6 +81,12 @@ def create_app() -> FastAPI:
     def readiness_check() -> dict:
         return {"status": "ready"}
 
+    @app.get("/", include_in_schema=False)
+    def root() -> dict:
+        from fastapi.responses import RedirectResponse
+
+        return RedirectResponse(url="/static/login.html")
+
     static_dir = os.path.join(
         os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "frontend"
     )
