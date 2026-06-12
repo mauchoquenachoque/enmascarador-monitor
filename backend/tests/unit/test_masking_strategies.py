@@ -4,7 +4,6 @@ from app.masking.fpe_strategy import FPEStrategy, FPESimulationStrategy
 from app.masking.redaction_strategy import RedactionStrategy
 from app.masking.sha256_strategy import SHA256Strategy
 
-
 class TestRedactionStrategy:
     def test_mask_replaces_with_x(self):
         s = RedactionStrategy()
