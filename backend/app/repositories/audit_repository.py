@@ -29,9 +29,7 @@ class AuditRepository:
         self.db.refresh(entry)
         return entry
 
-    def get_by_user(
-        self, user_id: str, skip: int = 0, limit: int = 100
-    ) -> list[AuditLog]:
+    def get_by_user(self, user_id: str, skip: int = 0, limit: int = 100) -> list[AuditLog]:
         return (
             self.db.query(AuditLog)
             .filter(AuditLog.user_id == user_id)

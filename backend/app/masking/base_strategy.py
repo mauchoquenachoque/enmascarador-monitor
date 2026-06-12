@@ -17,9 +17,7 @@ class MaskingStrategy(ABC):
     def mask(self, value: str) -> str:
         pass
 
-    def mask_dict(
-        self, data: list[dict[str, Any]], rules: dict[str, str]
-    ) -> list[dict[str, Any]]:
+    def mask_dict(self, data: list[dict[str, Any]], rules: dict[str, str]) -> list[dict[str, Any]]:
         masked = []
         for row in data:
             new_row = row.copy()

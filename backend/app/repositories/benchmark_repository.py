@@ -23,18 +23,10 @@ class BenchmarkRepository:
         )
 
     def get_by_engine(self, engine: str) -> list[BenchmarkResult]:
-        return (
-            self.db.query(BenchmarkResult)
-            .filter(BenchmarkResult.engine == engine)
-            .all()
-        )
+        return self.db.query(BenchmarkResult).filter(BenchmarkResult.engine == engine).all()
 
     def get_by_algorithm(self, algorithm: str) -> list[BenchmarkResult]:
-        return (
-            self.db.query(BenchmarkResult)
-            .filter(BenchmarkResult.algorithm == algorithm)
-            .all()
-        )
+        return self.db.query(BenchmarkResult).filter(BenchmarkResult.algorithm == algorithm).all()
 
     def get_comparison_matrix(self) -> list[BenchmarkResult]:
         return self.db.query(BenchmarkResult).all()

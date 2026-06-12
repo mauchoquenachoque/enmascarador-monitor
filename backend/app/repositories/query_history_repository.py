@@ -16,9 +16,7 @@ class QueryHistoryRepository:
     def get_by_id(self, record_id: str) -> QueryHistory | None:
         return self.db.query(QueryHistory).filter(QueryHistory.id == record_id).first()
 
-    def get_by_user(
-        self, user_id: str, skip: int = 0, limit: int = 50
-    ) -> list[QueryHistory]:
+    def get_by_user(self, user_id: str, skip: int = 0, limit: int = 50) -> list[QueryHistory]:
         return (
             self.db.query(QueryHistory)
             .filter(QueryHistory.user_id == user_id)

@@ -34,9 +34,7 @@ class PostgreSQLDatabase(BaseDatabase):
             schema.setdefault(t, []).append(c)
         return {"tables": schema}
 
-    def execute_query(
-        self, query: str, **kwargs: Any
-    ) -> list[dict[str, Any]]:
+    def execute_query(self, query: str, **kwargs: Any) -> list[dict[str, Any]]:
         conn = self.connect()
         try:
             with conn.cursor() as cursor:

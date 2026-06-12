@@ -48,12 +48,7 @@ def get_dashboard_stats(
     )
     top_algorithm = top_algo_row[0] if top_algo_row else "N/A"
 
-    recent = (
-        db.query(QueryHistory)
-        .order_by(QueryHistory.created_at.desc())
-        .limit(10)
-        .all()
-    )
+    recent = db.query(QueryHistory).order_by(QueryHistory.created_at.desc()).limit(10).all()
     recent_activity = [
         {
             "id": r.id,

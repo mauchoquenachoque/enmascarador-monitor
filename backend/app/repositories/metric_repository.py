@@ -14,9 +14,7 @@ class MetricRepository:
         self.db.refresh(metric)
         return metric
 
-    def get_by_type(
-        self, metric_type: str, skip: int = 0, limit: int = 100
-    ) -> list[Metric]:
+    def get_by_type(self, metric_type: str, skip: int = 0, limit: int = 100) -> list[Metric]:
         return (
             self.db.query(Metric)
             .filter(Metric.metric_type == metric_type)
@@ -49,9 +47,5 @@ class MetricRepository:
 
     def get_all(self, skip: int = 0, limit: int = 500) -> list[Metric]:
         return (
-            self.db.query(Metric)
-            .order_by(Metric.created_at.desc())
-            .offset(skip)
-            .limit(limit)
-            .all()
+            self.db.query(Metric).order_by(Metric.created_at.desc()).offset(skip).limit(limit).all()
         )

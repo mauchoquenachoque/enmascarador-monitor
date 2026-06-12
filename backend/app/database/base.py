@@ -15,9 +15,7 @@ class BaseDatabase(ABC):
         pass
 
     @abstractmethod
-    def execute_query(
-        self, query: str | dict[str, Any], **kwargs: Any
-    ) -> list[dict[str, Any]]:
+    def execute_query(self, query: str | dict[str, Any], **kwargs: Any) -> list[dict[str, Any]]:
         pass
 
     @abstractmethod

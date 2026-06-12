@@ -87,9 +87,7 @@ class MetricsCollector:
         result.total_latency_ms = result.total_latency_ns / 1_000_000.0
 
         if result.db_latency_ms > 0:
-            result.overhead_percent = (
-                result.masking_latency_ms / result.db_latency_ms
-            ) * 100
+            result.overhead_percent = (result.masking_latency_ms / result.db_latency_ms) * 100
 
         cpu_after = self.get_cpu_percent()
         ram_after, _ = self.get_ram_usage()

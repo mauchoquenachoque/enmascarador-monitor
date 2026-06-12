@@ -21,9 +21,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["X-XSS-Protection"] = "1; mode=block"
-        response.headers["Strict-Transport-Security"] = (
-            "max-age=31536000; includeSubDomains"
-        )
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
         response.headers["Content-Security-Policy"] = "default-src 'self'"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
         return response
@@ -35,9 +33,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         now = time.time()
         window = 60.0
 
-        request_counts[client_ip] = [
-            t for t in request_counts[client_ip] if now - t < window
-        ]
+        request_counts[client_ip] = [t for t in request_counts[client_ip] if now - t < window]
 
         if len(request_counts[client_ip]) >= settings.RATE_LIMIT_PER_MINUTE:
             from app.core.exceptions import RateLimitError
