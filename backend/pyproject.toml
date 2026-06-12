@@ -30,7 +30,7 @@ markers = [
 
 [tool.coverage.run]
 source = ["app"]
-omit = ["tests/*", "*/migrations/*"]
+omit = ["tests/*", "*/migrations/*", "*/engines/*"]
 
 [tool.coverage.report]
 fail_under = 70

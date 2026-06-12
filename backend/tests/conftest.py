@@ -7,6 +7,14 @@ from app.core.dependencies import get_db
 from app.main import app
 from app.models.base import Base
 
+import app.database.engines.sqlite  # noqa: F401 - register sqlite engine
+import app.database.engines.postgresql  # noqa: F401
+import app.database.engines.mysql  # noqa: F401
+import app.database.engines.sqlserver  # noqa: F401
+import app.database.engines.mongodb  # noqa: F401
+import app.database.engines.redis_db  # noqa: F401
+import app.database.engines.neo4j  # noqa: F401
+
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
@@ -26,11 +34,16 @@ def override_get_db():
 @pytest.fixture(scope="function")
 def db_session():
     Base.metadata.create_all(bind=engine)
+    import app.core.dependencies as dep_module
+
+    original_session_local = dep_module.SessionLocal
+    dep_module.SessionLocal = TestingSessionLocal
     db = TestingSessionLocal()
     try:
         yield db
     finally:
         db.close()
+        dep_module.SessionLocal = original_session_local
         Base.metadata.drop_all(bind=engine)
 
 

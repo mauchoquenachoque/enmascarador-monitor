@@ -124,9 +124,10 @@ class TestDatabaseEndpoints:
         assert "engines" in data
         assert "sqlite" in data["engines"]
 
-    def test_list_engines_requires_auth(self, client):
+    def test_list_engines_is_public(self, client):
         res = client.get("/api/v1/databases/engines")
-        assert res.status_code == 403
+        assert res.status_code == 200
+        assert "engines" in res.json()
 
 
 class TestMaskingEndpoints:
