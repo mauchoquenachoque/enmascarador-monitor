@@ -1,15 +1,18 @@
 <!DOCTYPE html>
-<html lang="es" class="dark">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reportes - Multi-DB Masking Monitor</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwindcss.config = { darkMode: 'class' }</script>
-    <style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'); body { font-family: 'Inter', sans-serif; }</style>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .nav-active { color: #60a5fa; border-bottom: 2px solid #60a5fa; }
+    </style>
 </head>
 <body class="bg-gray-950 text-white min-h-screen">
-    <nav class="bg-gray-900 border-b border-gray-800 px-6 py-3">
+    <nav class="bg-gray-900 border-b border-gray-800 px-6 py-3 sticky top-0 z-50">
         <div class="flex items-center justify-between max-w-7xl mx-auto">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
@@ -17,12 +20,12 @@
                 </div>
                 <span class="font-bold text-lg">Masking Monitor</span>
             </div>
-            <div class="flex items-center gap-4">
-                <a href="/static/dashboard.html" class="text-gray-400 hover:text-white text-sm font-medium">Dashboard</a>
-                <a href="/static/compare.html" class="text-gray-400 hover:text-white text-sm font-medium">Comparador</a>
-                <a href="/static/benchmark.html" class="text-gray-400 hover:text-white text-sm font-medium">Benchmark</a>
-                <a href="/static/reports.html" class="text-blue-400 hover:text-blue-300 text-sm font-medium">Reportes</a>
-                <button id="btn-logout" class="text-red-400 hover:text-red-300 text-sm">Salir</button>
+            <div class="flex items-center gap-6">
+                <a href="/static/dashboard.html" class="text-gray-400 hover:text-white text-sm font-medium pb-1">Dashboard</a>
+                <a href="/static/compare.html" class="text-gray-400 hover:text-white text-sm font-medium pb-1">Comparador</a>
+                <a href="/static/benchmark.html" class="text-gray-400 hover:text-white text-sm font-medium pb-1">Benchmark</a>
+                <a href="/static/reports.html" class="nav-active text-sm font-medium pb-1">Reportes</a>
+                <button id="btn-logout" class="text-red-400 hover:text-red-300 text-sm ml-4">Salir</button>
             </div>
         </div>
     </nav>
@@ -76,13 +79,13 @@
 
         async function exportMetrics(format) {
             try {
-                const data = await API.get(`/metrics/export?format=${format}`);
+                const data = await API.get(`/metrics/export?fmt=${format}`);
                 if (format === 'csv') {
                     downloadFile(data, 'metrics.csv', 'text/csv');
                 } else {
                     downloadFile(JSON.stringify(data, null, 2), 'metrics.json', 'application/json');
                 }
-                document.getElementById('data-preview').innerHTML = `<pre class="text-xs text-gray-300 bg-gray-800 p-4 rounded-lg overflow-auto max-h-96">${JSON.stringify(data, null, 2).substring(0, 2000)}...</pre>`;
+                document.getElementById('data-preview').innerHTML = `<pre class="text-xs text-gray-300 bg-gray-800 p-4 rounded-lg overflow-auto max-h-96">${JSON.stringify(data, null, 2).substring(0, 3000)}</pre>`;
             } catch (e) { alert('Error: ' + e.message); }
         }
 
@@ -90,7 +93,7 @@
             try {
                 const data = await API.get('/queries/history?limit=500');
                 downloadFile(JSON.stringify(data, null, 2), 'query_history.json', 'application/json');
-                document.getElementById('data-preview').innerHTML = `<pre class="text-xs text-gray-300 bg-gray-800 p-4 rounded-lg overflow-auto max-h-96">${JSON.stringify(data, null, 2).substring(0, 2000)}...</pre>`;
+                document.getElementById('data-preview').innerHTML = `<pre class="text-xs text-gray-300 bg-gray-800 p-4 rounded-lg overflow-auto max-h-96">${JSON.stringify(data, null, 2).substring(0, 3000)}</pre>`;
             } catch (e) { alert('Error: ' + e.message); }
         }
 
@@ -98,15 +101,9 @@
             try {
                 const data = await API.get('/benchmarks/history?limit=500');
                 downloadFile(JSON.stringify(data, null, 2), 'benchmarks.json', 'application/json');
-                document.getElementById('data-preview').innerHTML = `<pre class="text-xs text-gray-300 bg-gray-800 p-4 rounded-lg overflow-auto max-h-96">${JSON.stringify(data, null, 2).substring(0, 2000)}...</pre>`;
+                document.getElementById('data-preview').innerHTML = `<pre class="text-xs text-gray-300 bg-gray-800 p-4 rounded-lg overflow-auto max-h-96">${JSON.stringify(data, null, 2).substring(0, 3000)}</pre>`;
             } catch (e) { alert('Error: ' + e.message); }
         }
-
-        document.getElementById('btn-logout')?.addEventListener('click', () => {
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('refresh_token');
-            window.location.href = '/static/login.html';
-        });
     </script>
 </body>
 </html>

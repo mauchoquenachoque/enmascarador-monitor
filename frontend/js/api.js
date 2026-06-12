@@ -5,13 +5,25 @@ const API = {
         return localStorage.getItem('access_token');
     },
 
-    async request(method, path, body = null) {
-        const headers = { 'Content-Type': 'application/json' };
+    async request(method, path, body = null, isForm = false) {
+        const headers = {};
         const token = this.getToken();
         if (token) headers['Authorization'] = `Bearer ${token}`;
 
         const opts = { method, headers };
-        if (body) opts.body = JSON.stringify(body);
+
+        if (body) {
+            if (isForm) {
+                const formData = new URLSearchParams();
+                for (const [key, val] of Object.entries(body)) {
+                    formData.append(key, val);
+                }
+                opts.body = formData;
+            } else {
+                headers['Content-Type'] = 'application/json';
+                opts.body = JSON.stringify(body);
+            }
+        }
 
         const res = await fetch(`${API_BASE}${path}`, opts);
 
@@ -48,17 +60,23 @@ function checkAuth() {
     return true;
 }
 
-document.getElementById('btn-logout')?.addEventListener('click', async () => {
-    try {
-        const refresh = localStorage.getItem('refresh_token');
-        if (refresh) {
-            await API.post('/auth/logout', { refresh_token: refresh }).catch(() => {});
-        }
-    } finally {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        window.location.href = '/static/login.html';
+function setupLogout() {
+    const btn = document.getElementById('btn-logout');
+    if (btn) {
+        btn.addEventListener('click', async () => {
+            try {
+                const refresh = localStorage.getItem('refresh_token');
+                if (refresh) {
+                    await API.post('/auth/logout', { refresh_token: refresh }).catch(() => {});
+                }
+            } finally {
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('refresh_token');
+                window.location.href = '/static/login.html';
+            }
+        });
     }
-});
+}
 
 checkAuth();
+setupLogout();
