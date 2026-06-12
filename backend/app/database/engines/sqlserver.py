@@ -7,7 +7,7 @@ from app.database.factory import DatabaseFactory
 
 
 class SQLServerDatabase(BaseDatabase):
-    def connect(self) -> pymssql.Connection:
+    def connect(self) -> Any:
         return pymssql.connect(
             server=self.credentials.get("host", "localhost"),
             port=str(self.credentials.get("port", 1433)),

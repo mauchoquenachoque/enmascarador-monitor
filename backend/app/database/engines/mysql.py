@@ -8,7 +8,7 @@ from app.database.factory import DatabaseFactory
 
 
 class MySQLDatabase(BaseDatabase):
-    def connect(self) -> pymysql.Connection:
+    def connect(self) -> Any:
         return pymysql.connect(
             host=self.credentials.get("host", "localhost"),
             port=int(self.credentials.get("port", 3306)),

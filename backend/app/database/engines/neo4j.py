@@ -7,7 +7,7 @@ from app.database.factory import DatabaseFactory
 
 
 class Neo4jDatabase(BaseDatabase):
-    def connect(self) -> GraphDatabase.driver:
+    def connect(self) -> Any:
         return GraphDatabase.driver(
             self.credentials.get("host", "bolt://localhost:7687"),
             auth=(

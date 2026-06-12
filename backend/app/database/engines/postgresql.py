@@ -8,7 +8,7 @@ from app.database.factory import DatabaseFactory
 
 
 class PostgreSQLDatabase(BaseDatabase):
-    def connect(self) -> psycopg2.connection:
+    def connect(self) -> Any:
         return psycopg2.connect(
             host=self.credentials.get("host", "localhost"),
             port=int(self.credentials.get("port", 5432)),
