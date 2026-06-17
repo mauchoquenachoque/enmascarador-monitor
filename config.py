@@ -1,10 +1,18 @@
 import os
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
+def ensure_data_dir(path: str) -> str:
+    """Crea el directorio de datos persistentes si no existe."""
+    os.makedirs(path, exist_ok=True)
+    return path
+
+
 class Settings(BaseSettings):
     # Configuración de la aplicación
     APP_NAME: str = "Multi-DB Masking & Performance Overhead Monitor"
     DEBUG: bool = True
+    DATA_DIR: str = os.getenv("DATA_DIR", ".")
     
     # PostgreSQL Config
     PG_HOST: str = os.getenv("PG_HOST", "localhost")
@@ -45,7 +53,8 @@ class Settings(BaseSettings):
     NEO4J_USER: str = os.getenv("NEO4J_USER", "neo4j")
     NEO4J_PASSWORD: str = os.getenv("NEO4J_PASSWORD", "password")
 
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
 # Instancia global de las configuraciones
 settings = Settings()
+ensure_data_dir(settings.DATA_DIR)

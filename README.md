@@ -1,255 +1,115 @@
 # Multi-DB Masking & Performance Overhead Monitor
 
-Plataforma SecOps / DBA Tools que fusiona un motor de enmascaramiento dinámico de datos con un monitor de rendimiento e infraestructura.
+Este archivo sirve como el **Contexto Maestro** para la IA del IDE. Por favor, lee y respeta estas directrices, arquitectura y objetivos en cada respuesta y generación de código.
 
-## Arquitectura
+---
 
-```
-backend/
-├── app/
-│   ├── api/v1/endpoints/    # FastAPI endpoints
-│   ├── auth/                 # JWT authentication & authorization
-│   ├── core/                 # Config, security, logging, middleware
-│   ├── database/             # Factory + 7 DB engines
-│   │   └── engines/          # PostgreSQL, MySQL, SQLServer, SQLite, MongoDB, Redis, Neo4j
-│   ├── masking/              # Strategy Pattern + 4 algorithms
-│   ├── metrics/              # Collector + Benchmark engine
-│   ├── models/               # SQLAlchemy ORM models
-│   ├── repositories/         # Data access layer
-│   ├── schemas/              # Pydantic v2 schemas
-│   └── services/             # Business logic
-├── tests/
-│   ├── unit/                 # Unit tests (pytest)
-│   └── integration/          # Integration tests (TestClient)
-└── scripts/                  # Seed data, utilities
-frontend/
-├── *.html                    # Pages (login, dashboard, compare, benchmark, reports)
-├── js/                       # Vanilla JS modules
-└── css/                      # Styles
-docs/                         # Documentation
-docker/                       # Dockerfiles + nginx
-.github/workflows/            # CI/CD
-```
+## 🎯 Objetivo del Proyecto
+El sistema es una plataforma de **SecOps / DBA Tools** que fusiona un **motor de enmascaramiento dinámico de datos** con un **monitor de rendimiento e infraestructura**. 
 
-## Stack Tecnológico
+La propuesta de valor principal no es solo ocultar datos, sino **medir y graficar cuantitativamente el "impuesto de rendimiento" (overhead)** que la seguridad introduce al realizar consultas en tiempo real sobre diferentes motores de bases de datos.
 
-| Componente | Tecnología |
-|------------|-----------|
-| Backend | Python 3.11+, FastAPI, Pydantic v2 |
-| ORM | SQLAlchemy 2.0 |
-| Auth | JWT (python-jose), bcrypt |
-| DB Engines | PostgreSQL, MySQL, SQL Server, SQLite, MongoDB, Redis, Neo4j |
-| Masking | Redacción, SHA-256, AES/Fernet, FPE |
-| Frontend | HTML5, TailwindCSS, Chart.js, Vanilla JS |
-| Testing | pytest, pytest-cov, httpx |
-| Quality | Ruff, Black, Mypy, Bandit |
-| Docker | Multi-stage, nginx reverse proxy |
-| CI/CD | GitHub Actions |
 
-## Instalación
+
+- **Seguridad y Acceso:** El sistema está protegido por un Login de autenticación.
+- **Catálogo de Algoritmos de Enmascaramiento:** El sistema compara el rendimiento de: 1) Redacción Simple (X), 2) Hashing (SHA-256), 3) Encriptación Simétrica (AES/Fernet) y 4) Cifrado FPE.
+---
+
+## 🛠️ Stack Tecnológico
+- **Backend:** Python 3.11+ con **FastAPI** (asíncrono, de alto rendimiento).
+- **Frontend:** HTML5, **Tailwind CSS** (vía CDN) y **Chart.js** (para las gráficas en tiempo real).
+- **Motores de Bases de Datos Soportados (7 en total):**
+  - **Relacionales (SQL):** PostgreSQL (`psycopg2-binary`), MySQL (`pymysql`), SQL Server (`pymssql`), SQLite (`sqlite3`).
+  - **No Relacionales (NoSQL):** MongoDB (`pymongo` - Documentos), Redis (`redis` - Clave/Valor en memoria), Neo4j (`neo4j` - Grafos).
+---
+
+## 🚀 Métricas Clave (El "Norte" del Proyecto)
+Cualquier funcionalidad o vista que desarrollemos debe apuntar a alimentar estas tres métricas:
+
+1. **Delta de Latencia (ms):** Tiempo exacto de la Consulta Cruda (BD) vs. Tiempo con la capa de Enmascaramiento aplicada.
+2. **Consumo de CPU por Seguridad:** Identificar qué porcentaje del procesamiento se debe a la ejecución de algoritmos de enmascaramiento en el backend versus la consulta en la BD.
+3. **Eficiencia de Algoritmos (Matriz de Impacto):** Comparativa de rendimiento entre técnicas simples (ej. cambiar letras por 'X') y complejas (ej. Cifrado que Preserva el Formato - FPE) a través de los 4 motores de BD.
+
+---
+
+## 📐 Principios de Arquitectura para la IA
+Cuando escribas código para este proyecto, sigue estas reglas estrictas:
+- **Patrón Factory / Estrategia:** El acceso a las bases de datos debe estar centralizado en un `database_manager.py` que abstraiga la conexión a los 4 motores, devolviendo siempre un formato estandarizado (lista de diccionarios).
+- **Medición Precisa:** Utiliza `time.perf_counter_ns()` para capturar los deltas de tiempo antes y después de cada proceso (Query vs Enmascaramiento).
+- **Modularidad:** Mantén la lógica de conexión a BD, los algoritmos de enmascaramiento y los endpoints de FastAPI en módulos separados y limpios.
+- **Idioma:** El código, variables y comentarios deben seguir buenas prácticas de la industria, pero los logs expuestos, la documentación y la interfaz de usuario deben estar en **Español**.
+
+---
+
+## Despliegue en Render (sin Docker en tu PC)
+
+Si no puedes instalar Docker Desktop, usa **Render**. Construye el proyecto en la nube desde GitHub.
+
+Guia completa: **[RENDER-DEPLOY.md](./RENDER-DEPLOY.md)**
+
+Resumen:
+1. Sube el proyecto a GitHub
+2. Crea cuenta en [render.com](https://render.com)
+3. **New → Blueprint** → conecta el repo
+4. Abre la URL de `secops-api`
+
+---
 
 ### Requisitos
-- Python 3.11+
-- pip
+- Docker Desktop (Windows/macOS) o Docker Engine + Compose Plugin (Linux)
+- Al menos **8 GB RAM** libres (SQL Server y Neo4j consumen memoria)
 
-### Setup
+### Pasos
 
 ```bash
-# Clonar repositorio
-git clone https://github.com/tu-usuario/masking-monitor.git
-cd masking-monitor/backend
+# 1. Clonar el repositorio y entrar al directorio del proyecto
+cd "Multi-DB Masking & Performance Overhead Monitor"
 
-# Crear entorno virtual
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# venv\Scripts\activate   # Windows
+# 2. Crear el archivo de entorno a partir de la plantilla
+cp .env.example .env          # Linux/macOS
+copy .env.example .env          # Windows CMD
+Copy-Item .env.example .env     # Windows PowerShell
 
-# Instalar dependencias
-pip install -r requirements.txt
+# 3. Editar .env — cambiar SECRET_KEY, ADMIN_PASSWORD y contraseñas de BD
+#    Generar SECRET_KEY: python -c "import secrets; print(secrets.token_hex(32))"
 
-# Configurar variables de entorno
-cp .env.example .env
-# Editar .env con tus credenciales
+# 4. Levantar todo el stack
+docker compose up -d --build
 
-# Ejecutar seed (datos iniciales)
-python scripts/seed_data.py
-
-# Iniciar servidor
-python run.py
-# o
-uvicorn app.main:app --reload --port 8000
+# 5. Verificar que los servicios estén sanos
+docker compose ps
 ```
 
 ### Acceso
-- **API Docs**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
-- **Frontend**: http://localhost:8000/static/login.html
-- **Health**: http://localhost:8000/health
 
-### Usuarios por defecto
-| Usuario | Contraseña | Rol |
-|---------|-----------|-----|
-| admin | Admin123! | admin |
-| analyst | Analyst123! | analyst |
-| viewer | Viewer123! | viewer |
+| Servicio | URL |
+|---|---|
+| **Panel web (login local)** | http://localhost:8000/login |
+| API Gateway | http://localhost:8000 |
+| Masking Service | http://localhost:8001 |
+| Monitor Service | http://localhost:8002 |
+| Neo4j Browser | http://localhost:7474 |
 
-## Ejecución
+**Credenciales por defecto** (configurables en `.env`):
+- Email: `admin@secops.local`
+- Contraseña: `Admin1234!`
 
-```bash
-# Desarrollo
-uvicorn app.main:app --reload --port 8000
+### Autenticación
+El acceso es **solo con email + contraseña** (bcrypt). Los usuarios pueden registrarse desde `/login`.
 
-# Producción
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
+### Datos persistentes
+Los volúmenes Docker guardan:
+- `secops_data` → usuarios de plataforma + clave Fernet SDM
+- `monitor_data` → métricas de rendimiento
+- `pg_data`, `mysql_data`, `mssql_data`, `mongo_data`, `redis_data`, `neo4j_data` → bases de datos de prueba
 
-# Docker
-docker-compose -f docker-compose.dev.yml up --build
-```
-
-## Testing
+### Comandos útiles
 
 ```bash
-cd backend
-
-# Todos los tests
-pytest tests/ -v
-
-# Solo unit tests
-pytest tests/unit/ -v
-
-# Con cobertura
-pytest tests/ -v --cov=app --cov-report=term-missing
-
-# Con cobertura mínima (falla si < 70%)
-pytest tests/ -v --cov=app --cov-fail-under=70
+docker compose logs -f api          # Ver logs del gateway
+docker compose down                 # Detener servicios
+docker compose down -v              # Detener y borrar volúmenes (¡pierde datos!)
 ```
 
-## CI/CD
-
-Pipeline GitHub Actions:
-
-1. **Lint**: Ruff, Black, Mypy, Bandit
-2. **Test**: pytest con cobertura
-3. **Build**: Docker images
-
-```yaml
-# .github/workflows/ci.yml
-on: [push, pull_request]
-jobs:
-  lint → test → build
-```
-
-## Endpoints Principales
-
-### Auth
-- `POST /api/v1/auth/login` - Iniciar sesión
-- `POST /api/v1/auth/refresh` - Renovar token
-- `POST /api/v1/auth/logout` - Cerrar sesión
-- `GET /api/v1/auth/me` - Usuario actual
-
-### Masking
-- `GET /api/v1/masking/algorithms` - Listar algoritmos
-- `POST /api/v1/masking/apply` - Aplicar enmascaramiento
-
-### Métricas
-- `GET /api/v1/metrics/live` - CPU, RAM en tiempo real
-- `GET /api/v1/metrics/history` - Historial de métricas
-- `GET /api/v1/metrics/export?format=csv` - Exportar CSV/JSON
-
-### Benchmark
-- `POST /api/v1/benchmarks/run` - Ejecutar benchmark
-- `GET /api/v1/benchmarks/history` - Historial de benchmarks
-
-### Dashboard
-- `GET /api/v1/dashboard/stats` - Estadísticas KPI
-
-## Diagramas de Arquitectura
-
-### Flujo de Autenticación
-```mermaid
-sequenceDiagram
-    Client->>API: POST /auth/login {username, password}
-    API->>Auth: verify_password(hashed, plain)
-    Auth-->>API: true
-    API->>JWT: create_access_token(sub, role)
-    JWT-->>API: token
-    API-->>Client: {access_token, refresh_token}
-    Client->>API: GET /protected (Bearer token)
-    API->>JWT: decode_token(token)
-    JWT-->>API: {sub, role, exp}
-    API-->>Client: 200 OK
-```
-
-### Flujo de Benchmark
-```mermaid
-sequenceDiagram
-    Client->>API: POST /benchmarks/run
-    API->>DB: execute_query(query)
-    DB-->>API: raw_data
-    loop iterations
-        API->>Masking: apply_masking(data, rules)
-        Masking-->>API: masked_data
-        API->>Metrics: measure latency, cpu, ram
-    end
-    API->>Stats: calculate percentiles
-    API-->>Client: {summary, individual[]}
-```
-
-### Componentes
-```mermaid
-graph TB
-    subgraph Frontend
-        Login[Login HTML]
-        Dashboard[Dashboard]
-        Compare[Comparador]
-        Benchmark[Benchmark]
-    end
-    subgraph Backend
-        API[FastAPI Router]
-        Auth[JWT Auth]
-        Services[Services Layer]
-        Repos[Repositories]
-        Masking[Masking Strategies]
-        Metrics[Metrics Collector]
-        Factory[DB Factory]
-    end
-    subgraph Databases
-        PG[(PostgreSQL)]
-        MY[(MySQL)]
-        MS[(SQL Server)]
-        SL[(SQLite)]
-        MO[(MongoDB)]
-        RE[(Redis)]
-        NE[(Neo4j)]
-    end
-    Frontend --> API
-    API --> Auth
-    API --> Services
-    Services --> Repos
-    Services --> Masking
-    Services --> Metrics
-    Services --> Factory
-    Factory --> PG & MY & MS & SL & MO & RE & NE
-```
-
-## Despliegue Gratuito
-
-### Backend (Render Free)
-1. Conectar repo de GitHub
-2. Seleccionar `backend/` como root directory
-3. Build command: `pip install -r requirements.txt`
-4. Start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-
-### Frontend (Cloudflare Pages)
-1. Conectar repo de GitHub
-2. Output directory: `frontend/`
-3. Sin build command (HTML estático)
-
-### Base de Datos (Supabase Free)
-1. Crear proyecto en Supabase
-2. Copiar DATABASE_URL
-3. Configurar en variables de entorno del backend
-
-## Licencia
-
-MIT
+---
+*Última actualización de contexto: Junio 2026*
